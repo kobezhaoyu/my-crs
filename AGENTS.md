@@ -6,6 +6,7 @@
 
 - 使用中文进行说明、总结和项目记录；代码、命令、路径、文件名保持英文或原始名称。
 - 项目目录下使用 `local` 保存上下文、需求、计划、实施、测试、Git 和敏感信息记录。
+- `local` 目录下要按分支划分目录结构。比如：local/{git 分支名}。
 - `local` 目录默认不提交 Git，建议 `.gitignore` 中包含 `local/`。
 - Codex 执行任务时应先理解上下文，再小步修改，最后验证和总结。
 - 不擅自删除、覆盖、回滚用户已有改动。
@@ -15,16 +16,16 @@
 
 `local` 建议包含以下文件和目录：
 
-- `local/project.md`：项目基础信息，包含 `project_name` 和 `project_short_name`。
-- `local/project_glossary.md`：项目业务术语表，包含 `Term`、`Abbreviation`、`Definition`。
-- `local/project_git.md`：Git 远程地址、主要分支、提交者名称和邮箱，不保存密码和 Token。
-- `local/chat_history`：chat 内容和上下文摘要。
-- `local/req_record`：已确认需求。
-- `local/plan_record`：已确认计划。
-- `local/imp_record`：实施过程和关键决策。
-- `local/test_record`：测试方法、结果、异常和未覆盖项。
-- `local/git_record`：提交、push 或周期性仓库状态总结。
-- `local/personal_secret`：SSH、证书、密钥和其他敏感配置。
+- `local/{git 分支名}/project.md`：项目基础信息，包含 `project_name` 和 `project_short_name`。
+- `local/{git 分支名}/project_glossary.md`：项目业务术语表，包含 `Term`、`Abbreviation`、`Definition`。
+- `local/{git 分支名}/project_git.md`：Git 远程地址、主要分支、提交者名称和邮箱，不保存密码和 Token。
+- `local/{git 分支名}/chat_history`：chat 内容和上下文摘要。
+- `local/{git 分支名}/req_record`：已确认需求。
+- `local/{git 分支名}/plan_record`：已确认计划。
+- `local/{git 分支名}/imp_record`：实施过程和关键决策。
+- `local/{git 分支名}/test_record`：测试方法、结果、异常和未覆盖项。
+- `local/{git 分支名}/git_record`：提交、push 或周期性仓库状态总结。
+- `local/{git 分支名}/personal_secret`：SSH、证书、密钥和其他敏感配置。
 
 记录文件命名细节、频率和模板见 `local/codex_workflow.md`。
 
