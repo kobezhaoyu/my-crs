@@ -249,3 +249,6 @@ web/apiStats/
 web/admin-spa/dist/
 
 .serena/
+
+# Local Codex instructions
+AGENTS.md
