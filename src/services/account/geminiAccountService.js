@@ -29,18 +29,21 @@ const OAUTH_PROVIDER_ANTIGRAVITY = 'antigravity'
 
 const OAUTH_PROVIDERS = {
   [OAUTH_PROVIDER_GEMINI_CLI]: {
+    providerName: 'Gemini CLI',
+    clientIdEnv: 'GEMINI_OAUTH_CLIENT_ID',
+    clientSecretEnv: 'GEMINI_OAUTH_CLIENT_SECRET',
     // Gemini CLI OAuth 配置（公开）
-    clientId:
-      process.env.GEMINI_OAUTH_CLIENT_ID || '',
+    clientId: process.env.GEMINI_OAUTH_CLIENT_ID || '',
     clientSecret: process.env.GEMINI_OAUTH_CLIENT_SECRET || '',
     scopes: ['https://www.googleapis.com/auth/cloud-platform']
   },
   [OAUTH_PROVIDER_ANTIGRAVITY]: {
+    providerName: 'Antigravity',
+    clientIdEnv: 'ANTIGRAVITY_OAUTH_CLIENT_ID',
+    clientSecretEnv: 'ANTIGRAVITY_OAUTH_CLIENT_SECRET',
     // Antigravity OAuth 配置（参考 gcli2api）
-    clientId:
-      process.env.ANTIGRAVITY_OAUTH_CLIENT_ID || '',
-    clientSecret:
-      process.env.ANTIGRAVITY_OAUTH_CLIENT_SECRET || '',
+    clientId: process.env.ANTIGRAVITY_OAUTH_CLIENT_ID || '',
+    clientSecret: process.env.ANTIGRAVITY_OAUTH_CLIENT_SECRET || '',
     scopes: [
       'https://www.googleapis.com/auth/cloud-platform',
       'https://www.googleapis.com/auth/userinfo.email',
@@ -51,14 +54,14 @@ const OAUTH_PROVIDERS = {
   }
 }
 
-if (!process.env.GEMINI_OAUTH_CLIENT_SECRET) {
+if (!process.env.GEMINI_OAUTH_CLIENT_ID || !process.env.GEMINI_OAUTH_CLIENT_SECRET) {
   logger.warn(
-    '⚠️ GEMINI_OAUTH_CLIENT_SECRET 未设置，使用内置默认值（建议在生产环境通过环境变量覆盖）'
+    '⚠️ GEMINI_OAUTH_CLIENT_ID / GEMINI_OAUTH_CLIENT_SECRET 未设置，Gemini CLI OAuth 将不可用'
   )
 }
-if (!process.env.ANTIGRAVITY_OAUTH_CLIENT_SECRET) {
+if (!process.env.ANTIGRAVITY_OAUTH_CLIENT_ID || !process.env.ANTIGRAVITY_OAUTH_CLIENT_SECRET) {
   logger.warn(
-    '⚠️ ANTIGRAVITY_OAUTH_CLIENT_SECRET 未设置，使用内置默认值（建议在生产环境通过环境变量覆盖）'
+    '⚠️ ANTIGRAVITY_OAUTH_CLIENT_ID / ANTIGRAVITY_OAUTH_CLIENT_SECRET 未设置，Antigravity OAuth 将不可用'
   )
 }
 
@@ -74,6 +77,16 @@ function normalizeOauthProvider(oauthProvider) {
 function getOauthProviderConfig(oauthProvider) {
   const normalized = normalizeOauthProvider(oauthProvider)
   return OAUTH_PROVIDERS[normalized] || OAUTH_PROVIDERS[OAUTH_PROVIDER_GEMINI_CLI]
+}
+
+function assertOauthProviderConfig(oauthConfig) {
+  if (oauthConfig.clientId && oauthConfig.clientSecret) {
+    return
+  }
+
+  throw new Error(
+    `${oauthConfig.providerName} OAuth 未配置，请设置 ${oauthConfig.clientIdEnv} 和 ${oauthConfig.clientSecretEnv}`
+  )
 }
 
 // 🌐 TCP Keep-Alive Agent 配置
@@ -217,6 +230,7 @@ function createOAuth2Client(redirectUri = null, proxyConfig = null, oauthProvide
   // 如果没有提供 redirectUri，使用默认值
   const uri = redirectUri || 'http://localhost:45462'
   const oauthConfig = getOauthProviderConfig(oauthProvider)
+  assertOauthProviderConfig(oauthConfig)
 
   // 准备客户端选项
   const clientOptions = {
