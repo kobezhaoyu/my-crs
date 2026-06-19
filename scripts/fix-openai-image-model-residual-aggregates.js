@@ -301,7 +301,9 @@ async function inspectResiduals(redis, options) {
         indexKey: spec.indexKey ? spec.indexKey(keyId, periodPart) : null,
         oldIndexMember: spec.indexMember ? spec.indexMember(keyId, options.oldModel) : null,
         targetIndexMember:
-          spec.indexMember && options.targetModel ? spec.indexMember(keyId, options.targetModel) : null
+          spec.indexMember && options.targetModel
+            ? spec.indexMember(keyId, options.targetModel)
+            : null
       }
 
       if (isZero(stats)) {
